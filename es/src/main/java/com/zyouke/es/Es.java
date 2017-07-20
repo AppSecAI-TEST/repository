@@ -2,24 +2,19 @@ package com.zyouke.es;
 
 import java.net.UnknownHostException;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.action.admin.cluster.state.ClusterStateResponse;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest;
 import org.elasticsearch.action.bulk.BulkItemResponse;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
-import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Requests;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
-import org.elasticsearch.index.query.MatchAllQueryBuilder;
-import org.elasticsearch.index.query.MatchQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.TermQueryBuilder;
-import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.sort.SortOrder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zyouke.bean.Area;
@@ -29,8 +24,12 @@ public class Es {
     private static final String INDEX = "db"; 
     private static final String TYPE = "area";
     
-    public static void creatIndexByEs(List<Area> list,ConnectionPool pool) {
-	TransportClient client = pool.getTransportClient();
+    public static void creatIndexByEs(List<Area> list,ConnectionPool pool,String node) {
+	Map<String, Object> map = pool.getTransportClient(node);
+	TransportClient client = (TransportClient) map.get("client");
+	if(StringUtils.isBlank(node)){
+	    node = (String) map.get("node");
+	}
 	System.out.println("开始建索引.....");
 	long start = System.currentTimeMillis();
 	try {
@@ -62,15 +61,15 @@ public class Es {
 		System.out.println("索引建立成功.....共耗时" + (System.currentTimeMillis() - start) / 1000);
 	    }
 	} catch (Exception e) {
-	    e.printStackTrace();
-	}finally{
-	    pool.close(client);
+	    System.out.println("异常信息:"+e.getMessage());
+	}finally {
+	    pool.close(client, node);
 	}
 
     }
 
     // 查询全部
-    public static void search(ConnectionPool pool){
+    public static void search(ConnectionPool pool){/*
 	TransportClient client = pool.getTransportClient();
 	MatchAllQueryBuilder matchAllQuery = QueryBuilders.matchAllQuery();
 	SearchResponse searchResponse = client.prepareSearch(INDEX)
@@ -85,10 +84,10 @@ public class Es {
 	    System.out.println(searchHit.getSourceAsString());
 	}
 	pool.close(client);
-    }
+    */}
     
     // 不分词查询
-    public static void search1(ConnectionPool pool,String keyWord){
+    public static void search1(ConnectionPool pool,String keyWord){/*
 	TransportClient client = pool.getTransportClient();
 	TermQueryBuilder termQuery = QueryBuilders.termQuery("fullName",keyWord);
 	SearchResponse searchResponse = client.prepareSearch(INDEX)
@@ -104,10 +103,10 @@ public class Es {
 	    System.out.println(searchHit.getSourceAsString());
 	}
 	pool.close(client);
-    }
+    */}
     
     // 分词查询
-    public static void search2(ConnectionPool pool,String keyWord){
+    public static void search2(ConnectionPool pool,String keyWord){/*
 	TransportClient client = pool.getTransportClient();
 	MatchQueryBuilder matchQuery = QueryBuilders.matchQuery("fullName",keyWord);
 	matchQuery.analyzer("ik");
@@ -123,7 +122,7 @@ public class Es {
 	    System.out.println(searchHit.getSourceAsString());
 	}
 	pool.close(client);
-    }
+    */}
     
     /**
      * 删除所有的索引
@@ -131,7 +130,9 @@ public class Es {
      * @throws UnknownHostException
      */
     public static void deleteIndex(ConnectionPool pool) {
-	TransportClient client = pool.getTransportClient();
+	Map<String, Object> map = pool.getTransportClient(null);
+	TransportClient client = (TransportClient) map.get("client");
+	String node = (String) map.get("node"); 
 	try {
 	    ClusterStateResponse response = client.admin().cluster().prepareState().execute().actionGet();
 	    // 获取所有索引
@@ -144,7 +145,7 @@ public class Es {
 	} catch (Exception e) {
 	    System.out.println(e.getMessage());
 	}finally{
-	    pool.close(client);
+	    pool.close(client,node);
 	}
     }
     

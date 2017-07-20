@@ -7,18 +7,16 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.junit.Test;
-
 import com.zyouke.bean.Area;
 import com.zyouke.es.ConnectionPool;
 import com.zyouke.es.Es;
 
 public class EsTest {
 
-    @Test
-    public void test1(){
-	ExecutorService executorService = Executors.newFixedThreadPool(25);
-	final ConnectionPool pool = new ConnectionPool(10);
+    public static void main(String[] args) {
+
+	ExecutorService executorService = Executors.newFixedThreadPool(30);
+	final ConnectionPool pool = new ConnectionPool(15);
 	Es.deleteIndex(pool);
 	try {
 	    BufferedReader reader = new BufferedReader(new FileReader("E:/work_doc/demo_file/area_file/mysqlDataToText.txt"));
@@ -40,7 +38,7 @@ public class EsTest {
 		    list.clear();
 		    executorService.execute(new Runnable() {
 			public void run() {
-			    Es.creatIndexByEs(listTemp,pool);
+			    Es.creatIndexByEs(listTemp,pool,null);
 			}
 		    });
 		}
@@ -48,20 +46,20 @@ public class EsTest {
 	    executorService.shutdown();
 	    while (!executorService.isTerminated());
 	    if (list.size() > 0){
-		Es.creatIndexByEs(list,pool);
+		Es.creatIndexByEs(list,pool,null);
 	    }
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}
-    }
     
-    @Test
+    }
+    public void test1(){}
+    
     public void test2(){
 	ConnectionPool pool = new ConnectionPool(1);
 	Es.search(pool);
     }
     
-    @Test
     public void test3(){
 	ConnectionPool pool = new ConnectionPool(1);
 	Es.search2(pool,"±±¾©");
