@@ -12,14 +12,16 @@ import org.elasticsearch.common.transport.InetSocketTransportAddress;
 // es 连接池
 public class ConnectionPool {
 
+    private int initSize;
     // 连接池
     private LinkedBlockingQueue<TransportClient> connectionPool = new LinkedBlockingQueue<TransportClient>();;
-    public ConnectionPool() {
+    public ConnectionPool(int initSize) {
+	this.initSize = initSize;
 	initConnectionPool();
     }
     
     private synchronized void initConnectionPool(){
-	for (int i = 0; i < 10; i++) {
+	for (int i = 0; i < initSize; i++) {
 	    TransportClient client = getClient();
 	    if (client != null) {
 		connectionPool.add(client);
@@ -50,6 +52,7 @@ public class ConnectionPool {
     
     public void close(TransportClient client){
 	connectionPool.add(client);
+	client.close();
 	System.out.println("关闭后连接池中剩余连接数" + connectionPool.size());
     }
     

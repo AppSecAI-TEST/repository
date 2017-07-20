@@ -18,7 +18,7 @@ public class EsTest {
     @Test
     public void test1(){
 	ExecutorService executorService = Executors.newFixedThreadPool(25);
-	final ConnectionPool pool = new ConnectionPool();
+	final ConnectionPool pool = new ConnectionPool(10);
 	Es.deleteIndex(pool);
 	try {
 	    BufferedReader reader = new BufferedReader(new FileReader("E:/work_doc/demo_file/area_file/mysqlDataToText.txt"));
@@ -57,9 +57,13 @@ public class EsTest {
     
     @Test
     public void test2(){
-	ConnectionPool pool = new ConnectionPool();
+	ConnectionPool pool = new ConnectionPool(1);
 	Es.search(pool);
     }
     
-    
+    @Test
+    public void test3(){
+	ConnectionPool pool = new ConnectionPool(1);
+	Es.search2(pool,"±±¾©");
+    }
 }

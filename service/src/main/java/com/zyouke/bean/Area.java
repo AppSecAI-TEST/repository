@@ -1,8 +1,5 @@
 package com.zyouke.bean;
 
-
-
-
 public class Area {
 
     private Long id;// Ö÷¼ü

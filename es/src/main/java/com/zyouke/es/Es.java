@@ -15,8 +15,11 @@ import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.index.query.MatchAllQueryBuilder;
+import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.TermQueryBuilder;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.sort.SortOrder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zyouke.bean.Area;
@@ -66,6 +69,7 @@ public class Es {
 
     }
 
+    // 查询全部
     public static void search(ConnectionPool pool){
 	TransportClient client = pool.getTransportClient();
 	MatchAllQueryBuilder matchAllQuery = QueryBuilders.matchAllQuery();
@@ -83,9 +87,43 @@ public class Es {
 	pool.close(client);
     }
     
+    // 不分词查询
+    public static void search1(ConnectionPool pool,String keyWord){
+	TransportClient client = pool.getTransportClient();
+	TermQueryBuilder termQuery = QueryBuilders.termQuery("fullName",keyWord);
+	SearchResponse searchResponse = client.prepareSearch(INDEX)
+	      .setTypes(TYPE)
+	      .setQuery(termQuery)
+	      .addSort("fullName", SortOrder.DESC)
+	      .setFrom(0)
+	      .setSize(10)
+	      .get();
+	long totalHits = searchResponse.getHits().getTotalHits();
+	SearchHit[] hits = searchResponse.getHits().hits();
+	for (SearchHit searchHit : hits) {
+	    System.out.println(searchHit.getSourceAsString());
+	}
+	pool.close(client);
+    }
     
-    
-    
+    // 分词查询
+    public static void search2(ConnectionPool pool,String keyWord){
+	TransportClient client = pool.getTransportClient();
+	MatchQueryBuilder matchQuery = QueryBuilders.matchQuery("fullName",keyWord);
+	matchQuery.analyzer("ik");
+	SearchResponse searchResponse = client.prepareSearch(INDEX)
+	      .setTypes(TYPE)
+	      .setQuery(matchQuery)
+	      .setFrom(0)
+	      .setSize(10)
+	      .get();
+	long totalHits = searchResponse.getHits().getTotalHits();
+	SearchHit[] hits = searchResponse.getHits().hits();
+	for (SearchHit searchHit : hits) {
+	    System.out.println(searchHit.getSourceAsString());
+	}
+	pool.close(client);
+    }
     
     /**
      * 删除所有的索引
