@@ -14,7 +14,7 @@ import org.hibernate.cfg.Configuration;
 
 import com.zyouke.bean.Area;
 
-// 测试使用gitaaaaaaaaaaaaaa
+// 测试使用
 public class HibernateDao {
 
     private static SessionFactory sessionFactory = null;
