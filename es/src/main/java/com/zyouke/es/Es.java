@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.elasticsearch.ElasticsearchTimeoutException;
 import org.elasticsearch.action.admin.cluster.state.ClusterStateResponse;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest;
@@ -13,11 +14,13 @@ import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.client.Requests;
 import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zyouke.bean.Area;
+import com.zyouke.bean.Node;
 
 public class Es {
 
@@ -51,7 +54,7 @@ public class Es {
 		bulkRequest.add(client.prepareIndex(INDEX, TYPE, area.getId() + "").setSource(mapper.writeValueAsBytes(area)));
 	    }
 	    // 执行批量处理request
-	    BulkResponse bulkResponse = bulkRequest.get();
+	    BulkResponse bulkResponse = bulkRequest.get(TimeValue.timeValueSeconds(5));
 	    // 查看错误
 	    if (bulkResponse.hasFailures()) {
 		for (BulkItemResponse bulkItemResponse : bulkResponse) {
@@ -61,7 +64,14 @@ public class Es {
 		System.out.println("索引建立成功.....共耗时" + (System.currentTimeMillis() - start) / 1000);
 	    }
 	} catch (Exception e) {
-	    System.out.println("异常信息:"+e.getMessage());
+	    e.getStackTrace();
+	    if(e instanceof ElasticsearchTimeoutException){
+		if(node.equals(Node.NODE1.getValue())){
+		    creatIndexByEs(list, pool, Node.NODE2.getValue());
+		}else if (node.equals(Node.NODE2.getValue())) {
+		    creatIndexByEs(list, pool, Node.NODE1.getValue());
+		}
+	    }
 	}finally {
 	    pool.close(client, node);
 	}
