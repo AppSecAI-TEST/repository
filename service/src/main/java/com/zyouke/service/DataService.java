@@ -154,7 +154,8 @@ public class DataService {
     public synchronized static void add(Area area) {
 	list.add(area);
 	if(list.size() > 1000){
-	    HibernateDao.addAllSql(list);
+	    HibernateDao dao = new HibernateDao();
+	    dao.addAllSql(list);
 	    list.clear();
 	}
     }
@@ -185,7 +186,8 @@ public class DataService {
 	    }
 	    read.close();
 	    if (list.size() > 0) {
-		HibernateDao.addAllSql(list);
+		HibernateDao dao = new HibernateDao();
+		dao.addAllSql(list);
 		list.clear();
 	    }
 	} catch (Exception e) {
@@ -194,8 +196,8 @@ public class DataService {
     }
 
     public static void updateSql(int start,List<Area> queryList) {
-	
-	final List<Area> queryListTwo = HibernateDao.queryListByLimit(start);
+	HibernateDao dao = new HibernateDao();
+	final List<Area> queryListTwo = dao.queryListByLimit(start);
 	ExecutorService executorService = Executors.newFixedThreadPool(20);
 	for (final Area area : queryList) {
 	    executorService.execute(new Runnable() {
@@ -212,7 +214,8 @@ public class DataService {
 				areas.add(areaTwo);
 			    }
 			}
-			HibernateDao.updateSql(areas);
+			HibernateDao dao = new HibernateDao();
+			dao.updateSql(areas);
 		    }
 		}
 	    });
@@ -232,7 +235,8 @@ public class DataService {
 	    final int start = startTemp;
 	    executorService.execute(new Runnable() {
 		public void run() {
-		    List<Area> queryList = HibernateDao.queryListByLimit(start);
+		    HibernateDao dao = new HibernateDao();
+		    List<Area> queryList = dao.queryListByLimit(start);
 		    writer(queryList);
 		}
 	    });

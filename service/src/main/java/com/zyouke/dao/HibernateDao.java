@@ -18,31 +18,46 @@ import com.zyouke.bean.Area;
 public class HibernateDao {
 
     private static SessionFactory sessionFactory = null;
+    private static SessionFactory sessionFactory3307 = null;
     static {
 	sessionFactory = new Configuration().configure().buildSessionFactory();
+	sessionFactory3307 = new Configuration().configure("/hibernate.cfg_3307.xml").buildSessionFactory();
     }
 
-    public static void add(Area area) {
+    public void add(Area area) {
+	
+	System.out.println(area);
+	/*
 	Session session = sessionFactory.openSession();
 	Transaction tx = session.beginTransaction();
 	session.save(area);
 	tx.commit();
 	session.close();
-    }
+    */}
 
-    public static void addAll(List<Area> areas) {
+    public void addAll(List<Area> areas) {
 	Session session = sessionFactory.openSession();
+	Session session3307 = sessionFactory3307.openSession();
 	Transaction tx = session.beginTransaction();
+	Transaction tx3307 = session3307.beginTransaction();
 	for (Area area : areas) {
-	    session.save(area);
+	    if(area.getId() < 350000){
+		session3307.save(area);
+	    }else{
+		session.save(area);
+	    }
 	}
 	session.flush();
 	session.clear();
 	tx.commit();
 	session.close();
+	session3307.flush();
+	session3307.clear();
+	tx3307.commit();
+	session3307.close();
     }
 
-     public synchronized static  void addAllSql(List<Area> areas) {
+     public synchronized  void addAllSql(List<Area> areas) {
 	System.out.println("----------->" + areas.get(0).getCode());
 	String sqlInsert = "INSERT INTO t_area (CODE,VALUE) values ";
 	for (int i = 0; i < areas.size(); i++) {
@@ -63,7 +78,7 @@ public class HibernateDao {
 	}
     }
 
-    public static List<Area> queryList() {
+    public List<Area> queryList() {
 	Session session = sessionFactory.openSession();
 	Transaction tx = session.beginTransaction();
 	String sqlInsert = "select * from t_area where PARENT is null LIMIT 0,5300";
@@ -74,7 +89,7 @@ public class HibernateDao {
 	return list;
     }
 
-    public static List<Area> queryList(Map<String, String> map) {
+    public List<Area> queryList(Map<String, String> map) {
 	Session session = sessionFactory.openSession();
 	Transaction tx = session.beginTransaction();
 	String sqlSelect = "select * from t_area where ";
@@ -88,7 +103,7 @@ public class HibernateDao {
 	return list;
     }
 
-    public static List<Area> queryListByLimit(int start) {
+    public List<Area> queryListByLimit(int start) {
 	Session session = sessionFactory.openSession();
 	Transaction tx = session.beginTransaction();
 	String sqlSelect = "select * from t_area  LIMIT "+start+",10000";
@@ -99,7 +114,7 @@ public class HibernateDao {
 	return list;
     }
 
-    public synchronized static void updateSql(List<Area> areas) {
+    public synchronized void updateSql(List<Area> areas) {
 	try {
 	    FileWriter fileWritter = new FileWriter("E:/work_doc/demo_file/area_file/update.txt", true);
 	    BufferedWriter bufferWritter = new BufferedWriter(fileWritter);

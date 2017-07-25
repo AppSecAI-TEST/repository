@@ -15,7 +15,7 @@
        <property name="c3p0.maxIdleTime">25000</property>
        <property name="c3p0.idle_test_period">120</property>
        <property name="dialect">org.hibernate.dialect.MySQLDialect</property>
-       <property name="connection.url">jdbc:mysql://103.82.53.221:63306/db</property>
+       <property name="connection.url">jdbc:mysql://103.82.53.221:63307/db</property>
        <property name="connection.username">root</property>
        <property name="connection.password">123456</property>
        <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
