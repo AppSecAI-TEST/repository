@@ -10,51 +10,39 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import com.zyouke.bean.Area;
 
 // ≤‚ ‘ π”√
+@Repository("hibernateDao")
 public class HibernateDao {
 
-    private static SessionFactory sessionFactory = null;
-    private static SessionFactory sessionFactory3307 = null;
-    static {
-	sessionFactory = new Configuration().configure().buildSessionFactory();
-	sessionFactory3307 = new Configuration().configure("/hibernate.cfg_3307.xml").buildSessionFactory();
-    }
-
+    @Autowired  
+    private SessionFactory sessionFactory; 
+    
+    
     public void add(Area area) {
 	
 	System.out.println(area);
-	/*
 	Session session = sessionFactory.openSession();
 	Transaction tx = session.beginTransaction();
 	session.save(area);
 	tx.commit();
 	session.close();
-    */}
+    }
 
     public void addAll(List<Area> areas) {
 	Session session = sessionFactory.openSession();
-	Session session3307 = sessionFactory3307.openSession();
 	Transaction tx = session.beginTransaction();
-	Transaction tx3307 = session3307.beginTransaction();
 	for (Area area : areas) {
-	    if(area.getId() < 350000){
-		session3307.save(area);
-	    }else{
-		session.save(area);
-	    }
+	    session.save(area);
 	}
 	session.flush();
 	session.clear();
 	tx.commit();
 	session.close();
-	session3307.flush();
-	session3307.clear();
-	tx3307.commit();
-	session3307.close();
     }
 
      public synchronized  void addAllSql(List<Area> areas) {
