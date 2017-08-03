@@ -15,7 +15,7 @@
        <property name="user" value="root"></property>  
        <property name="password" value="123456"></property>  
        <property name="driverClass" value="com.mysql.jdbc.Driver"></property>  
-       <property name="jdbcUrl" value="jdbc:mysql://103.82.53.221:8066/dbSchema"></property>  
+       <property name="jdbcUrl" value="jdbc:mysql://103.82.53.221:8066/dbSchema?useUnicode=true"></property>  
        <property name="initialPoolSize" value="30"></property>  
        <property name="maxPoolSize" value="50"></property>  
    </bean>  

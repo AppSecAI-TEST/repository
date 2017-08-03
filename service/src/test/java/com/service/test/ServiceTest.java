@@ -27,7 +27,7 @@ public class ServiceTest {
     private HibernateDao hibernateDao;
     @Test
     public void test1() {
-	System.out.println("aaaaaaaa");
+	System.out.println(System.getProperty("line.separator").length());
     }
     
     @Test
@@ -78,7 +78,7 @@ public class ServiceTest {
 
     @Test
     public void test6() {
-	ExecutorService executorService = Executors.newFixedThreadPool(30);
+	ExecutorService executorService = Executors.newFixedThreadPool(50);
 	try {
 	    BufferedReader reader = new BufferedReader(new FileReader("E:/work_doc/demo_file/area_file/mysqlDataToText.txt"));
 	    String line = null;
@@ -92,13 +92,13 @@ public class ServiceTest {
 		area.setLevel(Integer.valueOf(lineArr[4].split("=")[1]));
 		area.setFullName(lineArr[5].split("=")[1]);
 		list.add(area);
-		if (list.size() > 1000) {
+		if (list.size() > 200) {
 		    final List<Area> listTemp = new ArrayList<Area>();
 		    listTemp.addAll(list);
 		    list.clear();
 		    executorService.execute(new Runnable() {
 			public void run() {
-			    hibernateDao.addAll(listTemp);
+			    hibernateDao.addAllSql(listTemp);
 			}
 		    });
 		}
@@ -106,7 +106,7 @@ public class ServiceTest {
 	    executorService.shutdown();
 	    while (!executorService.isTerminated());
 	    if (list.size() > 0){
-		hibernateDao.addAll(list);
+		hibernateDao.addAllSql(list);
 	    }
 	} catch (Exception e) {
 	    e.printStackTrace();

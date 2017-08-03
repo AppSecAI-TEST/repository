@@ -15,7 +15,7 @@ import org.springframework.stereotype.Repository;
 
 import com.zyouke.bean.Area;
 
-// ²âÊÔÊ¹ÓÃ
+// ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½
 @Repository("hibernateDao")
 public class HibernateDao {
 
@@ -45,19 +45,32 @@ public class HibernateDao {
 
      public synchronized  void addAllSql(List<Area> areas) {
 	System.out.println("----------->" + areas.get(0).getCode());
-	String sqlInsert = "INSERT INTO t_area (CODE,VALUE) values ";
+	String sqlInsert = "INSERT INTO t_area (CODE,VALUE,PARENT,LEVEL,FULL_NAME) values ";
+	StringBuffer buffer = new StringBuffer(sqlInsert);
 	for (int i = 0; i < areas.size(); i++) {
 	    Area area = areas.get(i);
 	    if (i == areas.size() - 1) {
-		sqlInsert = sqlInsert + "('" + area.getCode() + "'"+",'" + area.getValue() + "');";
+		buffer.append("(");
+		buffer.append("'"+area.getCode()+"',");
+		buffer.append("'"+area.getValue()+"',");
+		buffer.append("'"+area.getParent()+"',");
+		buffer.append(area.getLevel()+",");
+		buffer.append("'"+area.getFullName()+"'");
+		buffer.append(");");
 	    } else {
-		sqlInsert = sqlInsert + "('" + area.getCode() + "'"+",'" + area.getValue() + "'),";
+		buffer.append("(");
+		buffer.append("'"+area.getCode()+"',");
+		buffer.append("'"+area.getValue()+"',");
+		buffer.append("'"+area.getParent()+"',");
+		buffer.append(area.getLevel()+",");
+		buffer.append("'"+area.getFullName()+"'");
+		buffer.append("),");
 	    }
 	}
 	try {
 	    FileWriter fileWritter = new FileWriter("E:/work_doc/demo_file/area_file/t_area.txt", true);
 	    BufferedWriter bufferWritter = new BufferedWriter(fileWritter);
-	    bufferWritter.write(sqlInsert + "\r\n");
+	    bufferWritter.write(buffer.toString() + "\r\n");
 	    bufferWritter.close();
 	} catch (IOException e) {
 	    e.printStackTrace();
