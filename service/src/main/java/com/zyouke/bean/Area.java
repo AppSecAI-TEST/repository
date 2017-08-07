@@ -1,18 +1,19 @@
 package com.zyouke.bean;
 
-public class Area {
 
-    private Long id;// 主键
+public class Area{
 
-    private String code;// 字典编码
+    private Long id;
 
-    private String value;// 字典编码对应的值
+    private String code;
+    
+    private String value;
+    
+    private String parent;
 
-    private String parent;// 父id
+    private Integer level;
 
-    private Integer level;// 层级
-
-    private String fullName;// 全名，比如河北省沧州市衡水市
+    private String fullName;
 
     public Long getId() {
 	return id;

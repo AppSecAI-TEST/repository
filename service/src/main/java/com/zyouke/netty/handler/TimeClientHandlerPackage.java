@@ -31,7 +31,7 @@ public class TimeClientHandlerPackage extends ChannelHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 	System.out.println("TimeServer返回消息");
-       /* ByteBuf buf = (ByteBuf) msg;
+        /*ByteBuf buf = (ByteBuf) msg;
         byte[] byteArr = new byte[buf.readableBytes()];
         buf.readBytes(byteArr);
         String response = new String(byteArr,"UTF-8");*/

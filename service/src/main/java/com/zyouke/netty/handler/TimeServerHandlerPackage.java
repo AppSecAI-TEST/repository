@@ -21,7 +21,7 @@ public class TimeServerHandlerPackage extends ChannelHandlerAdapter {
 	String request = (String) msg;
         //request = request.substring(0,request.length() - System.getProperty("line.separator").length());
 	System.out.println("客户端请求:" + request  + ";this is count: " + ++count);
-	String formatDate = DateFormatUtils.format(System.currentTimeMillis(),"yyyy-MM-dd HH:mm:ss sss");
+	String formatDate = DateFormatUtils.format(System.currentTimeMillis(),"yyyy-MM-dd HH:mm:ss sss") + System.getProperty("line.separator");
 	ByteBuf  response = Unpooled.copiedBuffer(formatDate.getBytes());
 	ctx.write(response);
     }

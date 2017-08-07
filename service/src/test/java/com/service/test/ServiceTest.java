@@ -112,4 +112,20 @@ public class ServiceTest {
 	    e.printStackTrace();
 	}
     }
+    
+    @Test
+    public void test7() {
+	long start = System.currentTimeMillis();
+	try {
+	    BufferedReader reader = new BufferedReader(new FileReader("E:/work_doc/demo_file/area_file/mysqlDataToText.txt"));
+	    String line = null;
+	    List<Area> list = new ArrayList<Area>();
+	    while ((line = reader.readLine()) != null) {
+		System.out.println("******" + line);
+	    }
+	} catch (Exception e) {
+	    e.printStackTrace();
+	}
+	System.out.println("耗时" + (System.currentTimeMillis() - start) + "ms");
+    }
 }
