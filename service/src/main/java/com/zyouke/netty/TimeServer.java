@@ -13,7 +13,7 @@ import com.zyouke.netty.util.NettyUtils;
 
 public class TimeServer {
     
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
 	//NettyUtils.bind(new TimeServerHandler());
 	/*NettyUtils.bind(new ChannelInitializer<SocketChannel>() {
 		@Override
@@ -30,7 +30,7 @@ public class TimeServer {
 		sc.pipeline().addLast("http_aggregator",new HttpObjectAggregator(65536));
 		sc.pipeline().addLast("http_encoder",new HttpResponseEncoder());
 		sc.pipeline().addLast("http_chunked",new ChunkedWriteHandler());
-		sc.pipeline().addLast("http_file",new HttpFileServerHandler("/src/"));
+		sc.pipeline().addLast("http_file",new HttpFileServerHandler("aaa"));
 	    }
 	});
 	
