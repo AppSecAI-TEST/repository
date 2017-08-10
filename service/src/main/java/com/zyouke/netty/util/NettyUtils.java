@@ -22,7 +22,7 @@ public class NettyUtils {
 	    .channel(NioServerSocketChannel.class)
 	    .option(ChannelOption.SO_BACKLOG,1024)
 	    .childHandler(initializer);
-	    ChannelFuture future = b.bind(8080).sync();
+	    ChannelFuture future = b.bind("103.82.53.221",9090).sync();
 	    future.channel().closeFuture().sync();
 	} catch (Exception e) {
 	    e.printStackTrace();
