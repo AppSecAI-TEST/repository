@@ -8,7 +8,6 @@ import com.zyouke.bean.Area;
 public class DataSourcAop {
 
 
-    // 在数据插入之前,判断数据插入的库
     public void before(JoinPoint point) {
 	Signature signature = point.getSignature();
 	Area object = (Area) point.getArgs()[0];
