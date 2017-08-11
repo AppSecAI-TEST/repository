@@ -15,7 +15,7 @@ import org.springframework.stereotype.Repository;
 
 import com.zyouke.bean.Area;
 
-// ����ʹ��
+
 @Repository("hibernateDao")
 public class HibernateDao {
 

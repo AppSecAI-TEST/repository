@@ -27,7 +27,6 @@ public class DataService {
 
     public static List<Area> list = Collections.synchronizedList(new ArrayList<Area>());
 
-    // 解析html
     public static void parsingHtml(String url, String selector) {
 	List<String> urls = new ArrayList<String>();
 	ExecutorService executorService = Executors.newFixedThreadPool(20);
@@ -37,7 +36,7 @@ public class DataService {
 	    Document document = connection.get();
 	    Elements elements = document.select(selector);
 	    for (Element element : elements) {
-		if (selector.equals("table .provincetable a")) { // 省份
+		if (selector.equals("table .provincetable a")) { 
 		    String href = element.attr("href");
 		    String value = element.text();
 		    String code = href.replace(".html", "").trim() + "0000000000";
@@ -74,7 +73,6 @@ public class DataService {
 	while (!executorService.isTerminated());
     }
     
-    // 解析html
     public static void parsingHtml(String url, String selector, boolean boo) {
 	try {
 	    Connection connection = Jsoup.connect(url);
@@ -83,7 +81,7 @@ public class DataService {
 	    Elements elements = document.select(selector);
 	    
 	    for (Element element : elements) {
-		if (selector.equals("table .provincetable a")) { // 省份
+		if (selector.equals("table .provincetable a")) { 
 		    String href = element.attr("href");
 		    String value = element.text();
 		    String code = href.replace(".html", "").trim() + "0000000000";
@@ -95,9 +93,9 @@ public class DataService {
 		    int index = StringUtils.lastIndexOf(url, "/");
 		    String newUrl = url.substring(0, index + 1);
 		    parsingHtml(newUrl + href, "tr .citytr", boo);
-		} else {// 其他级别
+		} else {
 		    Elements elementsTag = element.getElementsByTag("a");
-		    if (elementsTag.size() == 0) {// 最后一级没有标签
+		    if (elementsTag.size() == 0) {
 			elementsTag = element.getElementsByTag("td");
 			if (elementsTag.size() == 2) {
 			    String code = elementsTag.get(0).text();
@@ -168,7 +166,7 @@ public class DataService {
     public static void parsingHtmlByError() {
 	try {
 	    File file = new File("E:/work_doc/demo_file/area_file/error.txt");
-	    InputStreamReader read = new InputStreamReader(new FileInputStream(file));// 考虑到编码格式
+	    InputStreamReader read = new InputStreamReader(new FileInputStream(file));
 	    BufferedReader bufferedReader = new BufferedReader(read);
 	    String lineTxt = null;
 	    while ((lineTxt = bufferedReader.readLine()) != null) {
@@ -247,7 +245,7 @@ public class DataService {
     }
     
     public synchronized static void writer(List<Area> queryList){
-	System.out.println("开始写...............");
+	System.out.println("");
 	try {
 	    BufferedWriter buf = new BufferedWriter(new FileWriter("E:/work_doc/demo_file/area_file/mysqlDataToText.txt",true));
 	    for (Area area : queryList) {
