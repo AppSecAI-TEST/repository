@@ -52,6 +52,7 @@ public class HttpFileServerHandler extends SimpleChannelInboundHandler<FullHttpR
 
 	final String uri = request.getUri();
 	final String path = sanitizeUri(uri);
+	System.out.println("--------------" + path);
 	if (path == null) {
 	    sendError(ctx, HttpResponseStatus.FORBIDDEN);
 	    return;
